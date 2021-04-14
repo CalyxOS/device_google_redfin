@@ -15,3 +15,5 @@ PRODUCT_MODEL := Pixel 5
 PRODUCT_BRAND := google
 
 PRODUCT_RESTRICT_VENDOR_FILES := false
+
+PRODUCT_SOONG_NAMESPACES += vendor/google_devices/redfin
