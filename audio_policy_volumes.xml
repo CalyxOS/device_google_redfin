@@ -24,21 +24,17 @@ volume index from 0 to 100.
 
 <volumes>
     <volume stream="AUDIO_STREAM_VOICE_CALL" deviceCategory="DEVICE_CATEGORY_HEADSET">
-        <point>0,-4200</point>
-        <point>33,-2800</point>
-        <point>66,-1400</point>
+        <point>0,-2700</point>
         <point>100,0</point>
     </volume>
     <volume stream="AUDIO_STREAM_VOICE_CALL" deviceCategory="DEVICE_CATEGORY_SPEAKER">
-        <point>0,-2700</point>
-        <point>33,-1770</point>
-        <point>66,-850</point>
+        <point>0,-2150</point>
+        <point>66,-950</point>
+        <point>83,-600</point>
         <point>100,0</point>
     </volume>
     <volume stream="AUDIO_STREAM_VOICE_CALL" deviceCategory="DEVICE_CATEGORY_EARPIECE">
-        <point>0,-2400</point>
-        <point>33,-1600</point>
-        <point>66,-800</point>
+        <point>0,-2700</point>
         <point>100,0</point>
     </volume>
     <volume stream="AUDIO_STREAM_VOICE_CALL" deviceCategory="DEVICE_CATEGORY_EXT_MEDIA"
@@ -51,16 +47,8 @@ volume index from 0 to 100.
         <point>66,-2200</point>
         <point>100,-1800</point>
     </volume>
-    <volume stream="AUDIO_STREAM_SYSTEM" deviceCategory="DEVICE_CATEGORY_SPEAKER">
-        <point>1,-7000</point>
-        <point>14,-5000</point>
-        <point>29,-4300</point>
-        <point>43,-3700</point>
-        <point>57,-3500</point>
-        <point>71,-3300</point>
-        <point>86,-3100</point>
-        <point>100,-2200</point>
-    </volume>
+    <volume stream="AUDIO_STREAM_SYSTEM" deviceCategory="DEVICE_CATEGORY_SPEAKER"
+                                         ref="DEFAULT_SYSTEM_VOLUME_CURVE"/>
     <volume stream="AUDIO_STREAM_SYSTEM" deviceCategory="DEVICE_CATEGORY_EARPIECE"
                                          ref="DEFAULT_SYSTEM_VOLUME_CURVE"/>
     <volume stream="AUDIO_STREAM_SYSTEM" deviceCategory="DEVICE_CATEGORY_EXT_MEDIA"
@@ -85,9 +73,10 @@ volume index from 0 to 100.
                                         ref="DEFAULT_MEDIA_VOLUME_CURVE"/>
     <volume stream="AUDIO_STREAM_MUSIC" deviceCategory="DEVICE_CATEGORY_SPEAKER">
         <point>1,-6000</point>
-        <point>19,-4400</point>
-        <point>71,-2000</point>
-        <point>91,-900</point>
+        <point>28,-3600</point>
+        <point>72,-1400</point>
+        <point>80,-1000</point>
+        <point>88,-700</point>
         <point>100,0</point>
     </volume>
     <volume stream="AUDIO_STREAM_MUSIC" deviceCategory="DEVICE_CATEGORY_EARPIECE"
@@ -153,14 +142,9 @@ volume index from 0 to 100.
         <point>100,-1800</point>
     </volume>
     <volume stream="AUDIO_STREAM_ENFORCED_AUDIBLE" deviceCategory="DEVICE_CATEGORY_SPEAKER">
-        <point>1,-7000</point>
-        <point>14,-5000</point>
-        <point>29,-4300</point>
-        <point>43,-3700</point>
-        <point>57,-3500</point>
-        <point>71,-3300</point>
-        <point>86,-3100</point>
-        <point>100,-2200</point>
+        <point>1,-3100</point>
+        <point>71,-2100</point>
+        <point>100,-1700</point>
     </volume>
     <volume stream="AUDIO_STREAM_ENFORCED_AUDIBLE" deviceCategory="DEVICE_CATEGORY_EARPIECE"
                                                    ref="DEFAULT_SYSTEM_VOLUME_CURVE"/>
@@ -174,16 +158,8 @@ volume index from 0 to 100.
         <point>66,-2200</point>
         <point>100,-1800</point>
     </volume>
-    <volume stream="AUDIO_STREAM_DTMF" deviceCategory="DEVICE_CATEGORY_SPEAKER">
-        <point>1,-7000</point>
-        <point>14,-3700</point>
-        <point>29,-3240</point>
-        <point>43,-3150</point>
-        <point>57,-2920</point>
-        <point>71,-2700</point>
-        <point>86,-2540</point>
-        <point>100,-1850</point>
-    </volume>
+    <volume stream="AUDIO_STREAM_DTMF" deviceCategory="DEVICE_CATEGORY_SPEAKER"
+                                       ref="DEFAULT_SYSTEM_VOLUME_CURVE"/>
     <volume stream="AUDIO_STREAM_DTMF" deviceCategory="DEVICE_CATEGORY_EARPIECE"
                                        ref="DEFAULT_SYSTEM_VOLUME_CURVE"/>
     <volume stream="AUDIO_STREAM_DTMF" deviceCategory="DEVICE_CATEGORY_EXT_MEDIA"

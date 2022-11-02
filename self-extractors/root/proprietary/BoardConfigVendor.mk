@@ -12,5 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
--include vendor/google_devices/redfin/BoardConfigPartial.mk
--include vendor/qcom/redfin/BoardConfigPartial.mk
+-include vendor/google_devices/bramble/BoardConfigPartial.mk
+-include vendor/qcom/bramble/BoardConfigPartial.mk
