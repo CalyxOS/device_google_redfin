@@ -6,4 +6,4 @@
 
 include device/google/redbull/BoardConfig-calyx.mk
 
-include vendor/google/redfin/BoardConfigVendor.mk
+include vendor/google/bramble/BoardConfigVendor.mk

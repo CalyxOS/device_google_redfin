@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-BOARD_PREBUILT_VENDORIMAGE := vendor/google_devices/redfin/proprietary/vendor.img
+BOARD_PREBUILT_VENDORIMAGE := vendor/google_devices/bramble/proprietary/vendor.img
 
 AB_OTA_PARTITIONS += \
     vendor
 
 -include vendor/google/tools/android-info.mk
 ifdef USE_ANDROID_INFO
-  TARGET_BOARD_INFO_FILE := vendor/google_devices/redfin/android-info.txt
+  TARGET_BOARD_INFO_FILE := vendor/google_devices/bramble/android-info.txt
 endif

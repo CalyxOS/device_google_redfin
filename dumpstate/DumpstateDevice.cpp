@@ -344,6 +344,12 @@ static void *dumpModemThread(void *data)
                 modemLogAllDir.c_str());
         RunCommandToFd(STDOUT_FILENO, "Dump IPA log", {"/vendor/bin/sh", "-c", cmd});
 
+        //Dump QRTR0 log for QMI service state
+        snprintf(cmd, sizeof(cmd),
+                "cat /d/ipc_logging/qrtr_0/log > %s/qrtr_0_log",
+                modemLogAllDir.c_str());
+        RunCommandToFd(STDOUT_FILENO, "Dump QRTR0 log", {"/vendor/bin/sh", "-c", cmd});
+
         dumpLogs(STDOUT_FILENO, extendedLogDir, modemLogAllDir, 100, EXTENDED_LOG_PREFIX);
         android::base::SetProperty(MODEM_EFS_DUMP_PROPERTY, "false");
     }
@@ -382,118 +388,94 @@ static void *dumpModemThread(void *data)
 }
 
 static void DumpTouch(int fd) {
-    const char touch_spi_path[] = "/sys/devices/virtual/sec/tsp";
+    const char touch_spi_path[] = "/sys/class/spi_master/spi0/spi0.0";
     char cmd[256];
 
-    if (!access(touch_spi_path, R_OK)) {
-        //Enable: force touch active
-        snprintf(cmd, sizeof(cmd),
-                 "echo %s > %s/cmd && cat %s/cmd_result",
-                 "force_touch_active,1",
-                 touch_spi_path, touch_spi_path);
-        RunCommandToFd(fd, "Force Touch Active", {"/vendor/bin/sh", "-c", cmd});
+    snprintf(cmd, sizeof(cmd), "%s/appid", touch_spi_path);
+    if (!access(cmd, R_OK)) {
+        // Touch firmware version
+        DumpFileToFd(fd, "STM touch firmware version", cmd);
 
-        //Change data format from portrait to landscape
-        snprintf(cmd, sizeof(cmd),
-                 "echo %s > %s/cmd && cat %s/cmd_result",
-                 "set_print_format,1",
-                 touch_spi_path, touch_spi_path);
-        RunCommandToFd(fd, "Print Format", {"/vendor/bin/sh", "-c", cmd});
-
-        //Firmware info
-        snprintf(cmd, sizeof(cmd), "%s/fw_version", touch_spi_path);
-        DumpFileToFd(fd, "LSI firmware version", cmd);
-
-        //Touch status
+        // Touch controller status
         snprintf(cmd, sizeof(cmd), "%s/status", touch_spi_path);
-        DumpFileToFd(fd, "LSI touch status", cmd);
+        DumpFileToFd(fd, "STM touch status", cmd);
 
-        //Calibration info
+        // Mutual raw data
         snprintf(cmd, sizeof(cmd),
-                 "echo %s > %s/cmd && cat %s/cmd_result",
-                 "get_mis_cal_info",
+                 "echo 13 00 01 > %s/stm_fts_cmd && cat %s/stm_fts_cmd",
                  touch_spi_path, touch_spi_path);
-        RunCommandToFd(fd, "Calibration info", {"/vendor/bin/sh", "-c", cmd});
+        RunCommandToFd(fd, "Mutual Raw", {"/vendor/bin/sh", "-c", cmd});
 
-        //Mutual strength
+        // Mutual strength data
         snprintf(cmd, sizeof(cmd),
-                 "echo %s > %s/cmd && cat %s/cmd_result",
-                 "run_delta_read_all",
+                 "echo 17 01 > %s/stm_fts_cmd && cat %s/stm_fts_cmd",
                  touch_spi_path, touch_spi_path);
         RunCommandToFd(fd, "Mutual Strength", {"/vendor/bin/sh", "-c", cmd});
 
-        //Self strength
+        // Self raw data
         snprintf(cmd, sizeof(cmd),
-                 "echo %s > %s/cmd && cat %s/cmd_result",
-                 "run_self_delta_read_all",
+                 "echo 15 00 01> %s/stm_fts_cmd && cat %s/stm_fts_cmd",
                  touch_spi_path, touch_spi_path);
-        RunCommandToFd(fd, "Self Strength", {"/vendor/bin/sh", "-c", cmd});
-
-        //Raw cap
-        snprintf(cmd, sizeof(cmd),
-                 "echo %s > %s/cmd && cat %s/cmd_result",
-                 "run_rawcap_read_all",
-                 touch_spi_path, touch_spi_path);
-        RunCommandToFd(fd, "Mutual Raw Cap", {"/vendor/bin/sh", "-c", cmd});
-
-        //Self raw cap
-        snprintf(cmd, sizeof(cmd),
-                 "echo %s > %s/cmd && cat %s/cmd_result",
-                 "run_self_rawcap_read_all",
-                 touch_spi_path, touch_spi_path);
-        RunCommandToFd(fd, "Self Raw Cap", {"/vendor/bin/sh", "-c", cmd});
-
-        //TYPE_OFFSET_DATA_SEC
-        snprintf(cmd, sizeof(cmd),
-                 "echo %s > %s/cmd && cat %s/cmd_result",
-                 "run_rawdata_read_type,19",
-                 touch_spi_path, touch_spi_path);
-        RunCommandToFd(fd, "TYPE_OFFSET_DATA_SEC", {"/vendor/bin/sh", "-c", cmd});
-
-        //TYPE_AMBIENT_DATA
-        snprintf(cmd, sizeof(cmd),
-                 "echo %s > %s/cmd && cat %s/cmd_result",
-                 "run_rawdata_read_type,3",
-                 touch_spi_path, touch_spi_path);
-        RunCommandToFd(fd, "TYPE_AMBIENT_DATA", {"/vendor/bin/sh", "-c", cmd});
-
-        //TYPE_DECODED_DATA
-        snprintf(cmd, sizeof(cmd),
-                 "echo %s > %s/cmd && cat %s/cmd_result",
-                 "run_rawdata_read_type,5",
-                 touch_spi_path, touch_spi_path);
-        RunCommandToFd(fd, "TYPE_DECODED_DATA", {"/vendor/bin/sh", "-c", cmd});
-
-        //TYPE_NOI_P2P_MIN
-        snprintf(cmd, sizeof(cmd),
-                 "echo %s > %s/cmd && cat %s/cmd_result",
-                 "run_rawdata_read_type,30",
-                 touch_spi_path, touch_spi_path);
-        RunCommandToFd(fd, "TYPE_NOI_P2P_MIN", {"/vendor/bin/sh", "-c", cmd});
-
-        //TYPE_NOI_P2P_MAX
-        snprintf(cmd, sizeof(cmd),
-                 "echo %s > %s/cmd && cat %s/cmd_result",
-                 "run_rawdata_read_type,31",
-                 touch_spi_path, touch_spi_path);
-        RunCommandToFd(fd, "TYPE_NOI_P2P_MAX", {"/vendor/bin/sh", "-c", cmd});
-
-        //Change data format back to default(portrait)
-        snprintf(cmd, sizeof(cmd),
-                 "echo %s > %s/cmd && cat %s/cmd_result",
-                 "set_print_format,0",
-                 touch_spi_path, touch_spi_path);
-        RunCommandToFd(fd, "Print Format", {"/vendor/bin/sh", "-c", cmd});
-
-
-        //Disable: force touch active
-        snprintf(cmd, sizeof(cmd),
-                 "echo %s > %s/cmd && cat %s/cmd_result",
-                 "force_touch_active,0",
-                 touch_spi_path, touch_spi_path);
-        RunCommandToFd(fd, "Force Touch Active", {"/vendor/bin/sh", "-c", cmd});
+        RunCommandToFd(fd, "Self Raw", {"/vendor/bin/sh", "-c", cmd});
     }
 
+    if (!access("/proc/fts/driver_test", R_OK)) {
+        RunCommandToFd(fd, "Mutual Raw Data",
+                       {"/vendor/bin/sh", "-c",
+                        "echo 23 00 > /proc/fts/driver_test && "
+                        "cat /proc/fts/driver_test"});
+        RunCommandToFd(fd, "Mutual Baseline Data",
+                       {"/vendor/bin/sh", "-c",
+                        "echo 23 03 > /proc/fts/driver_test && "
+                        "cat /proc/fts/driver_test"});
+        RunCommandToFd(fd, "Mutual Strength Data",
+                       {"/vendor/bin/sh", "-c",
+                        "echo 23 02 > /proc/fts/driver_test && "
+                        "cat /proc/fts/driver_test"});
+        RunCommandToFd(fd, "Self Raw Data",
+                       {"/vendor/bin/sh", "-c",
+                        "echo 24 00 > /proc/fts/driver_test && "
+                        "cat /proc/fts/driver_test"});
+        RunCommandToFd(fd, "Self Baseline Data",
+                       {"/vendor/bin/sh", "-c",
+                        "echo 24 03 > /proc/fts/driver_test && "
+                        "cat /proc/fts/driver_test"});
+        RunCommandToFd(fd, "Self Strength Data",
+                       {"/vendor/bin/sh", "-c",
+                        "echo 24 02 > /proc/fts/driver_test && "
+                        "cat /proc/fts/driver_test"});
+        RunCommandToFd(fd, "Mutual Compensation",
+                       {"/vendor/bin/sh", "-c",
+                        "echo 32 10 > /proc/fts/driver_test && "
+                        "cat /proc/fts/driver_test"});
+        RunCommandToFd(fd, "Self Compensation",
+                       {"/vendor/bin/sh", "-c",
+                        "echo 33 12 > /proc/fts/driver_test && "
+                        "cat /proc/fts/driver_test"});
+	RunCommandToFd(fd, "Golden MS Raw",
+                       {"/vendor/bin/sh", "-c",
+                        "echo 34 > /proc/fts/driver_test && "
+                        "cat /proc/fts/driver_test"});
+        RunCommandToFd(fd, "Packaging Plant - HW reset",
+                       {"/vendor/bin/sh", "-c",
+                        "echo 01 FA 20 00 00 24 80 > /proc/fts/driver_test"});
+	RunCommandToFd(fd, "Packaging Plant - Hibernate Memory",
+                       {"/vendor/bin/sh", "-c",
+                        "echo 01 FA 20 00 00 68 08 > /proc/fts/driver_test"});
+	RunCommandToFd(fd, "Packaging Plant - Read 10 bytes from Address 0x00043F28",
+                       {"/vendor/bin/sh", "-c",
+                        "echo 02 FB 00 04 3F 28 00 0A 00 > /proc/fts/driver_test && "
+                        "cat /proc/fts/driver_test"});
+    }
+
+    snprintf(cmd, sizeof(cmd), "%s/stm_fts_cmd", touch_spi_path);
+    if (!access(cmd, R_OK)) {
+        // ITO raw data
+        snprintf(cmd, sizeof(cmd),
+                 "echo 01 > %s/stm_fts_cmd && cat %s/stm_fts_cmd",
+                 touch_spi_path, touch_spi_path);
+        RunCommandToFd(fd, "ITO Raw", {"/vendor/bin/sh", "-c", cmd});
+    }
 }
 
 static void DumpDisplay(int fd) {
@@ -680,8 +662,6 @@ Return<DumpstateStatus> DumpstateDevice::dumpstateBoard_1_1(const hidl_handle& h
     DumpFileToFd(fd, "PPS", "/dev/logbuffer_pps");
     DumpFileToFd(fd, "BMS", "/dev/logbuffer_ssoc");
     DumpFileToFd(fd, "smblib", "/dev/logbuffer_smblib");
-    DumpFileToFd(fd, "WLC logs", "/dev/logbuffer_wireless");
-    DumpFileToFd(fd, "RTX logs", "/dev/logbuffer_rtx");
     DumpFileToFd(fd, "TTF", "/dev/logbuffer_ttf");
     DumpFileToFd(fd, "TTF details", "/sys/class/power_supply/battery/ttf_details");
     DumpFileToFd(fd, "TTF stats", "/sys/class/power_supply/battery/ttf_stats");
@@ -701,8 +681,6 @@ Return<DumpstateStatus> DumpstateDevice::dumpstateBoard_1_1(const hidl_handle& h
     }
 
     RunCommandToFd(fd, "Battery EEPROM", {"/vendor/bin/sh", "-c", "xxd /sys/devices/platform/soc/98c000.i2c/i2c-1/1-0050/1-00500/nvmem"});
-    DumpFileToFd(fd, "WLC VER", "/sys/devices/platform/soc/98c000.i2c/i2c-1/1-003b/version");
-    DumpFileToFd(fd, "WLC STATUS", "/sys/devices/platform/soc/98c000.i2c/i2c-1/1-003b/status");
 
     RunCommandToFd(fd, "eSIM Status", {"/vendor/bin/sh", "-c", "od -t x1 /sys/firmware/devicetree/base/chosen/cdt/cdb2/esim"});
     DumpFileToFd(fd, "Modem Stat", "/data/vendor/modem_stat/debug.txt");

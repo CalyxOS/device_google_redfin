@@ -16,36 +16,17 @@
 
 import /vendor/etc/init/hw/init.${ro.boot.hardware.platform}.rc
 
-on property:graphics.display.kernel_idle_timer.enabled=true
-    # Switch display mode to 60hz when idle
-    write /sys/devices/platform/soc/soc:qcom,dsi-display-primary/idle_mode "@60"
-
-on property:graphics.display.kernel_idle_timer.enabled=false
-    # Disable aggressive idle mode switching
-    write /sys/devices/platform/soc/soc:qcom,dsi-display-primary/idle_mode "none"
-
 on property:vendor.all.modules.ready=1
-    chown system system /sys/devices/virtual/sec/tsp/fw_version
-    chown system system /sys/devices/virtual/sec/tsp/cmd
-    chown system system /sys/devices/virtual/sec/tsp/cmd_result
-    chown system system /sys/devices/virtual/sec/tsp/status
-
-service vendor.mdm_helper /vendor/bin/mdm_helper
-    class core
-    group system wakelock
-
-on property:sys.retaildemo.enabled=1
-    write /sys/class/thermal/cdev-by-name/dc_icl/cur_state 2
-
-on property:sys.retaildemo.enabled=0
-    write /sys/class/thermal/cdev-by-name/dc_icl/cur_state 0
+    chown system system /sys/class/spi_master/spi0/spi0.0/stm_fts_cmd
+    chown system system /sys/class/spi_master/spi0/spi0.0/audio_status
+    chown system system /sys/class/spi_master/spi0/spi0.0/glove_mode
 
 # Toggle glove_mode according to touch_sensitivity_mode
 on property:persist.vendor.touch_sensitivity_mode=0 && property:sys.boot_completed=1
-    write /sys/devices/virtual/sec/tsp/cmd "glove_mode,0"
+    write /sys/class/spi_master/spi0/spi0.0/glove_mode 00
 
 on property:persist.vendor.touch_sensitivity_mode=1 && property:sys.boot_completed=1
-    write /sys/devices/virtual/sec/tsp/cmd "glove_mode,1"
+    write /sys/class/spi_master/spi0/spi0.0/glove_mode 01
 
 # Route touch_sensitivity_mode to persist
 on property:debug.touch_sensitivity_mode=0
@@ -54,10 +35,12 @@ on property:debug.touch_sensitivity_mode=0
 on property:debug.touch_sensitivity_mode=1
     setprop persist.vendor.touch_sensitivity_mode 1
 
+service vendor.mdm_helper /vendor/bin/mdm_helper
+    class core
+    group system wakelock
+
 on late-init
     chown system system /sys/devices/virtual/thermal/tz-by-name/skin-therm-monitor/trip_point_0_temp
     chown system system /sys/devices/virtual/thermal/tz-by-name/skin-therm-monitor/trip_point_0_hyst
-    chown system system /sys/devices/virtual/thermal/tz-by-name/panel-audio-therm/trip_point_0_temp
-    chown system system /sys/devices/virtual/thermal/tz-by-name/panel-audio-therm/trip_point_0_hyst
-    chown system system /sys/devices/virtual/thermal/tz-by-name/usbc-virt-monitor/trip_point_0_temp
-    chown system system /sys/devices/virtual/thermal/tz-by-name/usbc-virt-monitor/trip_point_0_hyst
+    chown system system /sys/devices/virtual/thermal/tz-by-name/usbc-therm-monitor/trip_point_0_temp
+    chown system system /sys/devices/virtual/thermal/tz-by-name/usbc-therm-monitor/trip_point_0_hyst

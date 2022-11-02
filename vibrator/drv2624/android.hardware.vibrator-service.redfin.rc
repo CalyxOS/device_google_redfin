@@ -1,4 +1,4 @@
-service vendor.vibrator.redfin /vendor/bin/hw/android.hardware.vibrator-service.redfin
+service vendor.vibrator.bramble /vendor/bin/hw/android.hardware.vibrator-service.bramble
     class hal
     user system
     group system

@@ -45,16 +45,14 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_product.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/handheld_vendor.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/telephony_vendor.mk)
 
-$(call inherit-product, device/google/redfin/device-redfin.mk)
-$(call inherit-product-if-exists, vendor/google_devices/redfin/proprietary/device-vendor.mk)
-$(call inherit-product-if-exists, vendor/google_devices/redfin/prebuilts/device-vendor-redfin.mk)
+$(call inherit-product, device/google/bramble/device-bramble.mk)
+$(call inherit-product-if-exists, vendor/google_devices/bramble/proprietary/device-vendor.mk)
+$(call inherit-product-if-exists, vendor/google_devices/bramble/prebuilts/device-vendor-bramble.mk)
 
-# Keep the VNDK APEX in /system partition for REL branches and Vendor Freeze targets
-# as these are expected to have stable API/ABI surfaces.
+# Keep the VNDK APEX in /system partition for REL branches as these branches are
+# expected to have stable API/ABI surfaces.
 ifneq (REL,$(PLATFORM_VERSION_CODENAME))
-ifneq ($(PRODUCT_VENDOR_FREEZE_SYSTEM_BUILD),true)
   PRODUCT_PACKAGES += com.android.vndk.current.on_vendor
-endif
 endif
 
 # Don't build super.img.
@@ -68,6 +66,6 @@ PRODUCT_BROKEN_VERIFY_USES_LIBRARIES := true
 
 PRODUCT_MANUFACTURER := Google
 PRODUCT_BRAND := Android
-PRODUCT_NAME := aosp_redfin
-PRODUCT_DEVICE := redfin
-PRODUCT_MODEL := AOSP on redfin
+PRODUCT_NAME := aosp_bramble
+PRODUCT_DEVICE := bramble
+PRODUCT_MODEL := AOSP on bramble

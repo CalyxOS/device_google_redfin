@@ -94,14 +94,10 @@ class Vibrator : public BnVibrator {
         virtual bool getLraPeriod(uint32_t *value) = 0;
         // Obtains the effect coeffs to calculate the target voltage
         virtual bool getEffectCoeffs(std::array<float, 4> *value) = 0;
-        // Obtains the external effect target G
-        virtual bool getEffectTargetG(std::array<float, 5> *value) = 0;
         // Obtain the max steady G value
         virtual bool getSteadyAmpMax(float *value) = 0;
         // Obtains the steady coeffs to calculate the target voltage
         virtual bool getSteadyCoeffs(std::array<float, 4> *value) = 0;
-        // Obtains the external steady target G
-        virtual bool getSteadyTargetG(std::array<float, 3> *value) = 0;
         // Obtains threshold in ms, above which close-loop should be used.
         virtual bool getCloseLoopThreshold(uint32_t *value) = 0;
         // Obtains dynamic/static configuration choice.
@@ -126,8 +122,6 @@ class Vibrator : public BnVibrator {
         virtual bool getSteadyShape(uint32_t *value) = 0;
         // Obtains the trigger effect support
         virtual bool getTriggerEffectSupport(uint32_t *value) = 0;
-        // Obtains device hardware version
-        virtual bool getDevHwVer(std::string *value) = 0;
         // Emit diagnostic information to the given file.
         virtual void debug(int fd) = 0;
     };

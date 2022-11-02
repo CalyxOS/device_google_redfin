@@ -14,8 +14,8 @@
 # limitations under the License.
 #
 
-$(call inherit-product, device/google/redfin/aosp_redfin.mk)
-PRODUCT_NAME := aosp_redfin_hwasan
+$(call inherit-product, device/google/bramble/aosp_bramble.mk)
+PRODUCT_NAME := aosp_bramble_hwasan
 
 # Add "hwaddress" as a global sanitizer if it's missing.
 ifeq ($(filter hwaddress,$(SANITIZE_TARGET)),)

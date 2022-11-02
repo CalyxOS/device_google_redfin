@@ -14,7 +14,6 @@
 # limitations under the License.
 #
 
-$(call inherit-product, device/google/redfin/aosp_redfin.mk)
-
-PRODUCT_NAME := aosp_redfin_64
-PRODUCT_MODEL := AOSP on Redfin 64-bit only
+$(call inherit-product, device/google/bramble/aosp_bramble.mk)
+PRODUCT_NAME := aosp_bramble_64
+PRODUCT_MODEL := Bramble 64-bit only

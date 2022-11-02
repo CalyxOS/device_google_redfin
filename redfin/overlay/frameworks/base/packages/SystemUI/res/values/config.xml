@@ -31,30 +31,8 @@
          always-on display) -->
     <string name="doze_brightness_sensor_type" translatable="false">com.google.sensor.binned_brightness</string>
 
-    <!-- Override value to use for proximity sensor.  -->
-    <string name="proximity_sensor_type" translatable="false">android.sensor.light</string>
-
-    <!-- If using proximity_sensor_type, specifies a threshold value to distinguish near and
-         far break points. A sensor value less than this is considered "near". -->
-    <item name="proximity_sensor_threshold" translatable="false" format="float" type="dimen">12</item>
-
-    <!-- If using proximity_sensor_type, specifies a threshold value to distinguish near and
-         far break points. A sensor value more than this is considered "far". If not set,
-         proximity_sensor_threshold is used. This allows one to implement a latching mechanism for
-         noisy sensors. -->
-    <item name="proximity_sensor_threshold_latch" translatable="false" format="float" type="dimen">24</item>
-
-    <string name="proximity_sensor_secondary_type" translatable="false">android.sensor.proximity</string>
-    <item name="proximity_sensor_secondary_threshold" translatable="false" format="float"
-          type="dimen">5</item>
-
     <!-- Doze: can we assume the pickup sensor includes a proximity check? -->
     <bool name="doze_pickup_performs_proximity_check">true</bool>
-
-    <!-- Doze: only register sensors that use prox when device is in certain Display states. This
-     may delay registering sensors when device first shows dozing UI but the
-     Display & Power state hasn't changed to low-power mode yet. -->
-    <bool name="doze_selectively_register_prox">true</bool>
 
     <!-- Doze: whether the double tap sensor reports 2D touch coordinates -->
     <bool name="doze_double_tap_reports_touch_coordinates">true</bool>
@@ -66,10 +44,10 @@
                to brightness values; -1 means keeping the current brightness. -->
     <integer-array name="config_doze_brightness_sensor_to_brightness">
         <item>-1</item> <!-- 0: OFF -->
-        <item>5</item> <!-- 1: NIGHT -->
-        <item>5</item> <!-- 2: LOW -->
-        <item>27</item> <!-- 3: HIGH -->
-        <item>27</item> <!-- 4: SUN -->
+        <item>4</item> <!-- 1: NIGHT -->
+        <item>7</item> <!-- 2: LOW -->
+        <item>34</item> <!-- 3: HIGH -->
+        <item>34</item> <!-- 4: SUN -->
     </integer-array>
 
     <!-- Doze: Table that translates sensor values from the doze_brightness_sensor_type sensor
@@ -78,7 +56,7 @@
                -1 means keeping the current opacity. -->
     <integer-array name="config_doze_brightness_sensor_to_scrim_opacity">
         <item>-1</item> <!-- 0: OFF -->
-        <item>133</item> <!-- 1: NIGHT -->
+        <item>109</item> <!-- 1: NIGHT -->
         <item>0</item> <!-- 2: LOW -->
         <item>0</item> <!-- 3: HIGH -->
         <item>0</item> <!-- 4: SUN -->
@@ -88,12 +66,11 @@
          Note that while rounded.xml includes the entire path (including the horizontal and vertical
          corner edges), this pulls out just the curve.
      -->
-
-    <string name="config_rounded_mask" translatable="false">M156,0 C76,4 58,5 31,31 5,58 4,76 0,156</string>
+    <string name="config_rounded_mask" translatable="false">M136,0 C80,4 58,9 33,33 9,58 4,80 0,136</string>
 
     <!-- Configure 13px of extra protection around the front-facing camera -->
     <string translatable="false" name="config_frontBuiltInDisplayCutoutProtection">
-        M 29,77
+        M 25,77
         a 52,52 0 1 0 104,0
         a 52,52 0 1 0 -104,0
         Z

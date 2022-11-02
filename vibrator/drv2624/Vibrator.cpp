@@ -59,8 +59,8 @@ static constexpr char WAVEFORM_DOUBLE_CLICK_EFFECT_SEQ[] = "3 0";
 static constexpr char WAVEFORM_HEAVY_CLICK_EFFECT_SEQ[] = "4 0";
 
 // UT team design those target G values
-static std::array<float, 5> EFFECT_TARGET_G = {0.275, 0.55, 0.6, 0.9, 1.12};
-static std::array<float, 3> STEADY_TARGET_G = {2.15, 1.145, 1.3};
+static constexpr std::array<float, 5> EFFECT_TARGET_G = {0.19, 0.30, 0.39, 0.66, 0.75};
+static constexpr std::array<float, 3> STEADY_TARGET_G = {1.5, 1.145, 0.82};
 
 struct SensorContext {
     ASensorEventQueue *queue;
@@ -161,9 +161,9 @@ static float targetGToVlevelsUnderLinearEquation(std::array<float, 4> inputCoeff
     float outPutVal = 0.0f;
     outPutVal = (targetG - inputCoeffs[1]) / inputCoeffs[0];
     if ((outPutVal > FLOAT_EPS) && (outPutVal <= MAX_VOLTAGE)) {
-      return outPutVal;
+        return outPutVal;
     } else {
-      return 0.0f;
+        return 0.0f;
     }
 }
 
@@ -188,7 +188,7 @@ static float targetGToVlevelsUnderCubicEquation(std::array<float, 4> inputCoeffs
         // Case 1: A = B = 0
         outPutVal = -inputCoeffs[1] / (3 * inputCoeffs[0]);
         if ((outPutVal > FLOAT_EPS) && (outPutVal <= MAX_VOLTAGE)) {
-          return outPutVal;
+            return outPutVal;
         }
         return 0.0f;
     } else if (Delta > FLOAT_EPS) {
@@ -220,15 +220,15 @@ static float targetGToVlevelsUnderCubicEquation(std::array<float, 4> inputCoeffs
 
         outPutVal = (-inputCoeffs[1] - 2 * sqrtA * cosSita) / (3 * inputCoeffs[0]);
         if ((outPutVal > FLOAT_EPS) && (outPutVal <= MAX_VOLTAGE)) {
-          return outPutVal;
+            return outPutVal;
         }
         outPutVal = (-inputCoeffs[1] + sqrtA * (cosSita + sinSitaSqrt3)) / (3 * inputCoeffs[0]);
         if ((outPutVal > FLOAT_EPS) && (outPutVal <= MAX_VOLTAGE)) {
-          return outPutVal;
+            return outPutVal;
         }
         outPutVal = (-inputCoeffs[1] + sqrtA * (cosSita - sinSitaSqrt3)) / (3 * inputCoeffs[0]);
         if ((outPutVal > FLOAT_EPS) && (outPutVal <= MAX_VOLTAGE)) {
-          return outPutVal;
+            return outPutVal;
         }
         return 0.0f;
     } else if (Delta <= FLOAT_EPS) {
@@ -236,11 +236,11 @@ static float targetGToVlevelsUnderCubicEquation(std::array<float, 4> inputCoeffs
         K = BB / AA;
         outPutVal = (-inputCoeffs[1] / inputCoeffs[0] + K);
         if ((outPutVal > FLOAT_EPS) && (outPutVal <= MAX_VOLTAGE)) {
-          return outPutVal;
+            return outPutVal;
         }
         outPutVal = (-K / 2);
         if ((outPutVal > FLOAT_EPS) && (outPutVal <= MAX_VOLTAGE)) {
-          return outPutVal;
+            return outPutVal;
         }
         return 0.0f;
     } else {
@@ -249,13 +249,11 @@ static float targetGToVlevelsUnderCubicEquation(std::array<float, 4> inputCoeffs
     }
 }
 
-static float vLevelsToTargetGUnderCubicEquation(
-    std::array<float, 4> inputCoeffs, float vLevel) {
-  float inputVoltage = 0.0f;
-  inputVoltage = vLevel * MAX_VOLTAGE;
-  return inputCoeffs[0] * pow(inputVoltage, 3) +
-         inputCoeffs[1] * pow(inputVoltage, 2) + inputCoeffs[2] * inputVoltage +
-         inputCoeffs[3];
+static float vLevelsToTargetGUnderCubicEquation(std::array<float, 4> inputCoeffs, float vLevel) {
+    float inputVoltage = 0.0f;
+    inputVoltage = vLevel * MAX_VOLTAGE;
+    return inputCoeffs[0] * pow(inputVoltage, 3) + inputCoeffs[1] * pow(inputVoltage, 2) +
+           inputCoeffs[2] * inputVoltage + inputCoeffs[3];
 }
 
 static bool motionAwareness() {
@@ -288,8 +286,9 @@ Vibrator::Vibrator(std::unique_ptr<HwApi> hwapi, std::unique_ptr<HwCal> hwcal)
     : mHwApi(std::move(hwapi)), mHwCal(std::move(hwcal)) {
     std::string autocal;
     uint32_t lraPeriod = 0, lpTrigSupport = 0;
-    std::array<float, 4> effectCoeffs = {0.0f};
-    std::array<float, 4> steadyCoeffs = {0.0f};
+    bool hasEffectCoeffs = false, hasSteadyCoeffs = false;
+    std::array<float, 4> effectCoeffs = {0};
+    std::array<float, 4> steadyCoeffs = {0};
 
     if (!mHwApi->setState(true)) {
         ALOGE("Failed to set state (%d): %s", errno, strerror(errno));
@@ -305,52 +304,30 @@ Vibrator::Vibrator(std::unique_ptr<HwApi> hwapi, std::unique_ptr<HwCal> hwcal)
 
     if (mDynamicConfig) {
         uint8_t i = 0;
-        bool hasEffectCoeffs = false, hasSteadyCoeffs = false,
-             hasExternalEffectG = false, hasExternalSteadyG = false;
-        std::array<float, 5> externalEffectTargetG = {0.0f};
-        std::array<float, 3> externalSteadyTargetG = {0.0f};
-        float tempVolLevel = 0.0f, tempAmpMax = 0.0f;
-        uint32_t longFreqencyShift = 0, shortVoltageMax = 0, longVoltageMax = 0,
-                 shape = 0;
-        std::string devHwVersion;
+        float tempVolLevel = 0.0f;
+        float tempAmpMax = 0.0f;
+        uint32_t longFreqencyShift = 0;
+        uint32_t shortVoltageMax = 0, longVoltageMax = 0;
+        uint32_t shape = 0;
 
         mHwCal->getLongFrequencyShift(&longFreqencyShift);
         mHwCal->getShortVoltageMax(&shortVoltageMax);
         mHwCal->getLongVoltageMax(&longVoltageMax);
 
-        // TODO: This is a workaround for b/157610908
-        mHwCal->getDevHwVer(&devHwVersion);
-        if ((devHwVersion.find("EVT") != std::string::npos) ||
-            (devHwVersion.find("PROTO") != std::string::npos)) {
-          EFFECT_TARGET_G = {0.15, 0.27, 0.35, 0.54, 0.65};
-          STEADY_TARGET_G = {1.2, 1.145, 0.4};
-          ALOGW("Device HW version: %s, this is an EVT device",
-                devHwVersion.c_str());
-        } else {
-          ALOGW("Device HW version: %s, no need to change the target G values",
-                devHwVersion.c_str());
-        }
-
         hasEffectCoeffs = mHwCal->getEffectCoeffs(&effectCoeffs);
-        hasExternalEffectG = mHwCal->getEffectTargetG(&externalEffectTargetG);
         for (i = 0; i < 5; i++) {
             if (hasEffectCoeffs) {
-              if (hasExternalEffectG) {
-                EFFECT_TARGET_G[i] = externalEffectTargetG[i];
-              }
-              // Use linear approach to get the target voltage levels
-              if ((effectCoeffs[2] == 0) && (effectCoeffs[3] == 0)) {
-                tempVolLevel = targetGToVlevelsUnderLinearEquation(
-                    effectCoeffs, EFFECT_TARGET_G[i]);
-                mEffectTargetOdClamp[i] =
-                    convertLevelsToOdClamp(tempVolLevel, lraPeriod);
-              } else {
-                // Use cubic approach to get the target voltage levels
-                tempVolLevel = targetGToVlevelsUnderCubicEquation(
-                    effectCoeffs, EFFECT_TARGET_G[i]);
-                mEffectTargetOdClamp[i] =
-                    convertLevelsToOdClamp(tempVolLevel, lraPeriod);
-              }
+                // Use linear approach to get the target voltage levels
+                if ((effectCoeffs[2] == 0) && (effectCoeffs[3] == 0)) {
+                    tempVolLevel =
+                        targetGToVlevelsUnderLinearEquation(effectCoeffs, EFFECT_TARGET_G[i]);
+                    mEffectTargetOdClamp[i] = convertLevelsToOdClamp(tempVolLevel, lraPeriod);
+                } else {
+                    // Use cubic approach to get the target voltage levels
+                    tempVolLevel =
+                        targetGToVlevelsUnderCubicEquation(effectCoeffs, EFFECT_TARGET_G[i]);
+                    mEffectTargetOdClamp[i] = convertLevelsToOdClamp(tempVolLevel, lraPeriod);
+                }
             } else {
                 mEffectTargetOdClamp[i] = shortVoltageMax;
             }
@@ -369,46 +346,33 @@ Vibrator::Vibrator(std::unique_ptr<HwApi> hwapi, std::unique_ptr<HwCal> hwcal)
         }));
 
         hasSteadyCoeffs = mHwCal->getSteadyCoeffs(&steadyCoeffs);
-        hasExternalSteadyG = mHwCal->getSteadyTargetG(&externalSteadyTargetG);
         if (hasSteadyCoeffs) {
             for (i = 0; i < 3; i++) {
-              if (hasExternalSteadyG) {
-                STEADY_TARGET_G[i] = externalSteadyTargetG[i];
-              }
-              // Use cubic approach to get the steady target voltage levels
-              // For steady level 3 voltage which is used for non-motion
-              // voltage, we use interpolation method to calculate the voltage
-              // via 20% of MAX voltage, 60% of MAX voltage and steady level 3
-              // target G
-              if (i == 2) {
-                tempVolLevel =
-                    ((STEADY_TARGET_G[2] -
-                      vLevelsToTargetGUnderCubicEquation(steadyCoeffs, 0.2)) *
-                     0.4 * MAX_VOLTAGE) /
-                        (vLevelsToTargetGUnderCubicEquation(steadyCoeffs, 0.6) -
-                         vLevelsToTargetGUnderCubicEquation(steadyCoeffs,
-                                                            0.2)) +
-                    0.2 * MAX_VOLTAGE;
-              } else {
-                tempVolLevel = targetGToVlevelsUnderCubicEquation(
-                    steadyCoeffs, STEADY_TARGET_G[i]);
-              }
-              mSteadyTargetOdClamp[i] =
-                  convertLevelsToOdClamp(tempVolLevel, lraPeriod);
-              if ((mSteadyTargetOdClamp[i] <= 0) ||
-                  (mSteadyTargetOdClamp[i] > longVoltageMax)) {
-                mSteadyTargetOdClamp[i] = longVoltageMax;
-              }
+                // Use cubic approach to get the steady target voltage levels
+                // For steady level 3 voltage which is used for non-motion voltage, we use
+                // interpolation method to calculate the voltage via 20% of MAX
+                // voltage, 60% of MAX voltage and steady level 3 target G
+                if (i == 2) {
+                    tempVolLevel = ((STEADY_TARGET_G[2] -
+                                     vLevelsToTargetGUnderCubicEquation(steadyCoeffs, 0.2)) *
+                                    0.4 * MAX_VOLTAGE) /
+                                       (vLevelsToTargetGUnderCubicEquation(steadyCoeffs, 0.6) -
+                                        vLevelsToTargetGUnderCubicEquation(steadyCoeffs, 0.2)) +
+                                   0.2 * MAX_VOLTAGE;
+                } else {
+                    tempVolLevel =
+                        targetGToVlevelsUnderCubicEquation(steadyCoeffs, STEADY_TARGET_G[i]);
+                }
+                mSteadyTargetOdClamp[i] = convertLevelsToOdClamp(tempVolLevel, lraPeriod);
+                if ((mSteadyTargetOdClamp[i] <= 0) || (mSteadyTargetOdClamp[i] > longVoltageMax)) {
+                    mSteadyTargetOdClamp[i] = longVoltageMax;
+                }
             }
         } else {
-          if (hasExternalSteadyG) {
-            STEADY_TARGET_G[0] = externalSteadyTargetG[0];
-            STEADY_TARGET_G[2] = externalSteadyTargetG[2];
-          }
-          mSteadyTargetOdClamp[0] =
-              mHwCal->getSteadyAmpMax(&tempAmpMax)
-                  ? round((STEADY_TARGET_G[0] / tempAmpMax) * longVoltageMax)
-                  : longVoltageMax;
+            mSteadyTargetOdClamp[0] =
+                mHwCal->getSteadyAmpMax(&tempAmpMax)
+                    ? round((STEADY_TARGET_G[0] / tempAmpMax) * longVoltageMax)
+                    : longVoltageMax;
             mSteadyTargetOdClamp[2] =
                 mHwCal->getSteadyAmpMax(&tempAmpMax)
                     ? round((STEADY_TARGET_G[2] / tempAmpMax) * longVoltageMax)
@@ -563,8 +527,6 @@ binder_status_t Vibrator::dump(int fd, const char **args, uint32_t numArgs) {
         dprintf(fd, "  Steady Shape: %" PRIu32 "\n", mSteadyConfig->shape);
         dprintf(fd, "  Steady OD Clamp: %" PRIu32 " %" PRIu32 " %" PRIu32 "\n",
                 mSteadyConfig->odClamp[0], mSteadyConfig->odClamp[1], mSteadyConfig->odClamp[2]);
-        dprintf(fd, "  Steady target G: %f %f %f\n", STEADY_TARGET_G[0],
-                STEADY_TARGET_G[1], STEADY_TARGET_G[2]);
         dprintf(fd, "  Steady OL LRA Period: %" PRIu32 "\n", mSteadyConfig->olLraPeriod);
     }
     if (mEffectConfig) {
@@ -573,9 +535,6 @@ binder_status_t Vibrator::dump(int fd, const char **args, uint32_t numArgs) {
                 "  Effect OD Clamp: %" PRIu32 " %" PRIu32 " %" PRIu32 " %" PRIu32 " %" PRIu32 "\n",
                 mEffectConfig->odClamp[0], mEffectConfig->odClamp[1], mEffectConfig->odClamp[2],
                 mEffectConfig->odClamp[3], mEffectConfig->odClamp[4]);
-        dprintf(fd, "  Effect target G: %f %f %f %f %f\n", EFFECT_TARGET_G[0],
-                EFFECT_TARGET_G[1], EFFECT_TARGET_G[2], EFFECT_TARGET_G[3],
-                EFFECT_TARGET_G[4]);
         dprintf(fd, "  Effect OL LRA Period: %" PRIu32 "\n", mEffectConfig->olLraPeriod);
     }
     dprintf(fd, "  Click Duration: %" PRIu32 "\n", mClickDuration);

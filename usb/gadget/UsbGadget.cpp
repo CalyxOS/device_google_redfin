@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#define LOG_TAG "android.hardware.usb.gadget@1.1-service.redfin"
+#define LOG_TAG "android.hardware.usb.gadget@1.1-service.bramble"
 
 #include "UsbGadget.h"
 #include <dirent.h>
