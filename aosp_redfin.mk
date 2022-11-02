@@ -49,12 +49,10 @@ $(call inherit-product, device/google/redfin/device-redfin.mk)
 $(call inherit-product-if-exists, vendor/google_devices/redfin/proprietary/device-vendor.mk)
 $(call inherit-product-if-exists, vendor/google_devices/redfin/prebuilts/device-vendor-redfin.mk)
 
-# Keep the VNDK APEX in /system partition for REL branches and Vendor Freeze targets
-# as these are expected to have stable API/ABI surfaces.
+# Keep the VNDK APEX in /system partition for REL branches as these branches are
+# expected to have stable API/ABI surfaces.
 ifneq (REL,$(PLATFORM_VERSION_CODENAME))
-ifneq ($(PRODUCT_VENDOR_FREEZE_SYSTEM_BUILD),true)
   PRODUCT_PACKAGES += com.android.vndk.current.on_vendor
-endif
 endif
 
 # Don't build super.img.

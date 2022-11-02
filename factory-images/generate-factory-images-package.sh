@@ -20,6 +20,6 @@ DEVICE=redfin
 PRODUCT=redfin
 VERSION=rd1a.200312.002
 SRCPREFIX=signed-
-BOOTLOADER=r3-0.3-6265493
+BOOTLOADER=b5-0.2-6218156
 RADIO=g7250-00014-200305-B-6264959
 source ../../../common/generate-factory-images-common.sh

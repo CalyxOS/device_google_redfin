@@ -13,21 +13,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 ifdef PHONE_CAR_BOARD_PRODUCT
-  include device/google_car/$(PHONE_CAR_BOARD_PRODUCT)/BoardConfig.mk
+    include device/google_car/$(PHONE_CAR_BOARD_PRODUCT)/BoardConfig.mk
 else
-  TARGET_BOOTLOADER_BOARD_NAME := redfin
-  TARGET_SCREEN_DENSITY := 440
-  TARGET_RECOVERY_UI_MARGIN_HEIGHT := 165
-  USES_DEVICE_GOOGLE_REDFIN := true
+    TARGET_BOOTLOADER_BOARD_NAME := redfin
+    TARGET_SCREEN_DENSITY := 420
+    TARGET_RECOVERY_UI_MARGIN_HEIGHT := 165
+    USES_DEVICE_GOOGLE_BRAMBLE := true
 
-  include device/google/redbull/BoardConfig-common.mk
+    include device/google/redbull/BoardConfig-common.mk
 
-  # Testing related defines
-  #BOARD_PERFSETUP_SCRIPT := platform_testing/scripts/perf-setup/r3-setup.sh
+    # Testing related defines
+    #BOARD_PERFSETUP_SCRIPT := platform_testing/scripts/perf-setup/b5-setup.sh
 
-  -include vendor/google_devices/redfin/proprietary/BoardConfigVendor.mk
+    -include vendor/google_devices/redfin/proprietary/BoardConfigVendor.mk
 endif
 
 include device/google/redfin/redfin/BoardConfig-calyx.mk

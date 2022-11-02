@@ -32,7 +32,7 @@ $(eval $(call declare-copy-files-license-metadata,device/google/redfin,wpa_suppl
 
 $(eval $(call declare-1p-copy-files,device/google/redfin,audio_policy_configuration.xml))
 
-ifeq ($(USES_DEVICE_GOOGLE_REDFIN),true)
+ifeq ($(USES_DEVICE_GOOGLE_BRAMBLE),true)
   subdir_makefiles=$(call first-makefiles-under,$(LOCAL_PATH))
   $(foreach mk,$(subdir_makefiles),$(info including $(mk) ...)$(eval include $(mk)))
 endif

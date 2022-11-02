@@ -51,9 +51,9 @@
     <string name="config_dozeTapSensorType" translatable="false">com.google.sensor.single_touch</string>
 
     <!-- MMS user agent string -->
-    <string name="config_mms_user_agent" translatable="false">gd1yq</string>
+    <string name="config_mms_user_agent" translatable="false">g025e</string>
     <!-- MMS user agent profile url -->
-    <string name="config_mms_user_agent_profile_url" translatable="false">http://www.gstatic.com/android/sms/GD1YQ.xml</string>
+    <string name="config_mms_user_agent_profile_url" translatable="false">http://www.gstatic.com/android/sms/G025E.xml</string>
 
     <!-- Array of desired screen brightness in nits corresponding to the lux values
       in the config_autoBrightnessLevels array. As with config_screenBrightnessMinimumNits and
@@ -88,7 +88,7 @@
       <item>264.8221315</item>    <!--  1808 - 2981 -->
       <item>327.8974352</item>    <!--  2981 - 5000 -->
       <item>401.1676739</item>    <!--  5000 - 10000 -->
-      <item>600.0</item>          <!--  10000+ -->
+      <item>494.0846144</item>    <!--  10000+ -->
     </array>
 
     <!-- Minimum screen brightness allowed by the power manager. -->
@@ -115,16 +115,16 @@
     <integer name="config_screenBrightnessForVrSettingMaximum">7</integer>
 
     <!-- Minimum screen brightness setting allowed by power manager.
-         The user is forbidden from setting the brightness below this level. -->
+         The user is forbidden from setting the brightness below this level.  -->
     <item name="config_screenBrightnessSettingMinimumFloat" format="float" type="dimen">0.0</item>
 
     <!-- Maximum screen brightness allowed by the power manager.
-         The user is forbidden from setting the brightness above this level -->
+         The user is forbidden from setting the brightness above this level. -->
     <item name="config_screenBrightnessSettingMaximumFloat" format="float" type="dimen">1.0</item>
 
     <!-- Default screen brightness setting
          Must be in the range specified by minimum and maximum. -->
-    <item name="config_screenBrightnessSettingDefaultFloat" format="float" type="dimen">0.29019607843</item>
+    <item name="config_screenBrightnessSettingDefaultFloat" format="float" type="dimen">0.32156862745</item>
 
     <!-- An array describing the screen's backlight values corresponding to the brightness
          values in the config_screenBrightnessNits array.
@@ -144,21 +144,21 @@
          This array should be equal in size to config_screenBrightnessBacklight -->
     <array name="config_screenBrightnessNits">
         <item>2.0</item>
-        <item>500.0</item>
+        <item>450.0</item>
     </array>
 
-    <!-- Nonlinear coefficients for maximum panel brightness of 500 nits -->
+    <!-- Nonlinear coefficients for maximum panel brightness of 450 nits -->
     <string-array name="config_reduceBrightColorsCoefficientsNonlinear">
-        <!-- a-coefficient --> <item>-0.4553233597</item>
-        <!-- b-coefficient --> <item>-0.2380196976</item>
-        <!-- y-intercept --> <item>0.9801096801</item>
+        <!-- a-coefficient --> <item>-0.4429953456</item>
+        <!-- b-coefficient --> <item>-0.2434077725</item>
+        <!-- y-intercept --> <item>0.9809063061</item>
     </string-array>
 
-    <!-- Linear coefficients for maximum panel brightness of 500 nits -->
+    <!-- Linear coefficients for maximum panel brightness of 450 nits -->
     <string-array name="config_reduceBrightColorsCoefficients">
-        <!-- a-coefficient --> <item>0.0</item>
-        <!-- b-coefficient --> <item>-0.96</item>
-        <!-- y-intercept --> <item>1.0</item>
+        <!-- a-coefficient --> <item>-0.000000000000001</item>
+        <!-- b-coefficient --> <item>-0.955555555555554</item>
+        <!-- y-intercept --> <item>1.000000000000000</item>
     </string-array>
 
     <!-- The nominal white coordinates, in CIE1931 XYZ color space, for Display White Balance to
@@ -169,13 +169,6 @@
         <!-- Nominal White Y --> <item>1.0     </item>
         <!-- Nominal White Z --> <item>1.089366</item>
     </string-array>
-
-    <!-- The default refresh rate. Redfin manages this using the peak refresh rate setting, so set
-         this value to 0 so it has no effect. -->
-    <integer name="config_defaultRefreshRate">0</integer>
-
-    <!-- The default peak refresh rate. -->
-    <integer name="config_defaultPeakRefreshRate">90</integer>
 
     <!-- Shutdown if the battery temperature exceeds (this value * 0.1) Celsius. -->
     <integer name="config_shutdownBatteryTemperature">600</integer>
@@ -208,10 +201,10 @@
     <!-- Display cutout configuration -->
     <string translatable="false" name="config_mainBuiltInDisplayCutout">
       <!-- The hole punch dimensions are this:
-      M 42,77 a 39,39 0 1,0 78,0 a 39,39 0 1,0 -78,0
+      M 38,78 a 39,39 0 1,0 78,0 a 39,39 0 1,0 -78,0
       but using a radius 40 circle for now to see the antialiasing.
       -->
-        M 41,77 a 40,40 0 1 0 80,0 40,40 0 1 0 -80,0 Z
+        M 37,77 a 40,40 0 1 0 80,0 40,40 0 1 0 -80,0 Z
 
         @left
     </string>
@@ -229,10 +222,11 @@
     <dimen name="rounded_corner_radius">108px</dimen>
 
     <!-- Top adjustment for the software rounded corners since corners are not perfectly
-        round. This value is used when retrieving the "radius" of the rounded corner in cases
-        where the exact bezier curve cannot be retrieved. This value will be subtracted from
-        rounded_corner_radius to more accurately provide a "radius" for the rounded corners.-->
-    <dimen name="rounded_corner_radius_adjustment">8px</dimen>
+         round. This value is used when retrieving the "radius" of the rounded corner in cases
+         where the exact bezier curve cannot be retrieved. This value will be subtracted from
+         rounded_corner_radius to more accurately provide a "radius" for the rounded corners.
+         -->
+    <dimen name="rounded_corner_radius_adjustment">16px</dimen>
 
     <!-- Height of the status bar.
          Do not read this dimen directly. Use {@link SystemBarUtils#getStatusBarHeight} instead.
@@ -240,33 +234,6 @@
     <dimen name="status_bar_height_default">28dp</dimen>
     <dimen name="status_bar_height_portrait">136px</dimen>
     <dimen name="status_bar_height_landscape">28dp</dimen>
-
-    <!-- Not allow to switch to higher refresh rate when display brightness setting is
-         equal or less than this value -->
-    <integer-array name="config_brightnessThresholdsOfPeakRefreshRate">
-        <item>10</item> <!-- 33% UI brightness -->
-        <item>14</item> <!-- 40% UI brightness -->
-    </integer-array>
-    <integer-array name="config_ambientThresholdsOfPeakRefreshRate">
-        <item>-1</item>
-        <item>20</item>
-    </integer-array>
-
-    <!-- default refresh rate in the zone defined by birghtness and ambient thresholds -->
-    <integer name="config_defaultRefreshRateInZone">90</integer>
-
-    <!-- Switch to fixed refresh rate when display brightness setting is
-         equal or more than this value -->
-    <integer-array name="config_highDisplayBrightnessThresholdsOfFixedRefreshRate">
-        <item>255</item> <!-- 100% UI brightness -->
-    </integer-array>
-
-    <integer-array name="config_highAmbientBrightnessThresholdsOfFixedRefreshRate">
-        <item>50000</item>
-    </integer-array>
-
-    <!-- default refresh rate in the high zone defined by birghtness and ambient thresholds -->
-    <integer name="config_fixedRefreshRateInHighZone">60</integer>
 
     <!-- List of biometric sensors on the device, in decreasing strength. Consumed by AuthService
      when registering authenticators with BiometricService. Format must be ID:Modality:Strength,
