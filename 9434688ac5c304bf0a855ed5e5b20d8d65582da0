@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "70f39ef4_8ae46168",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2023-05-02T16:25:04Z",
+      "side": 1,
+      "message": "Doesn\u0027t work, but the followup should.",
+      "revId": "9434688ac5c304bf0a855ed5e5b20d8d65582da0",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    }
+  ]
+}
