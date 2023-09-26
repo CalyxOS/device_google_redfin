@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1731b9af_22c5097f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2023-09-26T19:19:13Z",
+      "side": 1,
+      "message": "Supported till October 2023 (aka 1 more month)",
+      "revId": "66ba48f99b191a9753f3d690c6033d7f7377c049",
+      "serverId": "35266860-6252-469c-a67d-185064479fc0"
+    }
+  ]
+}
