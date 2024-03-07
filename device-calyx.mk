@@ -15,6 +15,11 @@
 # limitations under the License.
 #
 
+# Camera
+PRODUCT_PACKAGES += \
+    android.hardware.camera.device-V2-ndk.vendor:64 \
+    android.hardware.camera.provider-V2-ndk.vendor:64
+
 # For Google Camera
 PRODUCT_COPY_FILES += \
     device/google/redfin/the_experiences.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/sysconfig/the_experiences.xml
