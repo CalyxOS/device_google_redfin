@@ -33,7 +33,7 @@ include hardware/google/pixel/powershare/device.mk
 
 # Wi-Fi
 PRODUCT_PACKAGES += \
-    android.hardware.wifi-V1-ndk.vendor:64
+    android.hardware.wifi-V2-ndk.vendor:64
 
 # wireless_charger HAL service
 include device/google/redfin/wireless_charger/wireless_charger.mk
